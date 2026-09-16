@@ -390,29 +390,6 @@ time {
   margin: 0;
 }
 
-.resume-page.edit-mode [contenteditable="true"] {
-  outline: 1px dashed rgba(56, 87, 198, 0.35);
-  border-radius: 1mm;
-  cursor: text;
-}
-
-.resume-page.edit-mode [contenteditable="true"]:hover {
-  outline: 1px dashed rgba(56, 87, 198, 0.6);
-  background: rgba(56, 87, 198, 0.05);
-}
-
-.resume-page.edit-mode [contenteditable="true"]:focus {
-  outline: 1.5px solid var(--blue);
-  background: rgba(56, 87, 198, 0.08);
-}
-
-@media print {
-  .resume-page [contenteditable="true"] {
-    outline: none !important;
-    background: transparent !important;
-  }
-}
-
 @media print {
   body {
     background: white;

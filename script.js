@@ -1,5 +1,4 @@
 const data = window.resumeData;
-const editStorageKey = "html-resume-edits";
 
 const text = (value) => document.createTextNode(value);
 
@@ -134,14 +133,6 @@ async function copyToClipboard(value, button) {
 }
 
 function bindActions() {
-  document.querySelector('[data-action="toggle-edit"]').addEventListener("click", (event) => {
-    toggleEditMode(event.currentTarget);
-  });
-  document.querySelector('[data-action="reset-content"]').addEventListener("click", () => {
-    if (!confirm("确定要清除本地保存的编辑内容，恢复到 resume-data.js 的原始内容吗？")) return;
-    localStorage.removeItem(editStorageKey);
-    location.reload();
-  });
   document.querySelector('[data-action="print"]').addEventListener("click", () => window.print());
   document.querySelector('[data-action="copy-markdown"]').addEventListener("click", (event) => {
     copyToClipboard(toMarkdown(), event.currentTarget);
@@ -151,80 +142,7 @@ function bindActions() {
   });
 }
 
-// ---- 实时编辑：将可编辑元素标记为 contenteditable，并把改动持久化到 localStorage ----
-
-const EDITABLE_SELECTOR =
-  "#candidate-name, #candidate-target, #candidate-summary, .info-item span, .item-header h4, .item-header .role, .item-header time, .item-summary, .achievement-list li, .skill-item strong, .skill-item span";
-
-function elementPath(el) {
-  const resume = document.getElementById("resume");
-  const path = [];
-  let node = el;
-  while (node && node !== resume) {
-    const parent = node.parentElement;
-    if (!parent) break;
-    const index = Array.from(parent.children).indexOf(node);
-    path.unshift(index);
-    node = parent;
-  }
-  return path.join(".");
-}
-
-function loadEdits() {
-  try {
-    return JSON.parse(localStorage.getItem(editStorageKey) || "{}");
-  } catch (error) {
-    return {};
-  }
-}
-
-function saveEdit(path, value) {
-  const edits = loadEdits();
-  edits[path] = value;
-  localStorage.setItem(editStorageKey, JSON.stringify(edits));
-}
-
-function applySavedEdits() {
-  const edits = loadEdits();
-  const resume = document.getElementById("resume");
-  resume.querySelectorAll(EDITABLE_SELECTOR).forEach((el) => {
-    const path = elementPath(el);
-    if (Object.prototype.hasOwnProperty.call(edits, path)) {
-      el.textContent = edits[path];
-    }
-  });
-}
-
-function toggleEditMode(button) {
-  const resume = document.getElementById("resume");
-  const enabling = !resume.classList.contains("edit-mode");
-  resume.classList.toggle("edit-mode", enabling);
-
-  const editable = resume.querySelectorAll(EDITABLE_SELECTOR);
-  editable.forEach((el) => {
-    el.setAttribute("contenteditable", enabling ? "true" : "false");
-  });
-
-  if (enabling) {
-    button.textContent = "关闭实时编辑";
-    editable.forEach((el) => {
-      el.addEventListener("blur", handleEditableBlur);
-    });
-  } else {
-    button.textContent = "开启实时编辑";
-    editable.forEach((el) => {
-      el.removeEventListener("blur", handleEditableBlur);
-    });
-  }
-}
-
-function handleEditableBlur(event) {
-  const el = event.currentTarget;
-  saveEdit(elementPath(el), el.textContent);
-}
-
 renderBasics();
 renderInternships();
 renderSkills();
-applySavedEdits();
 bindActions();
