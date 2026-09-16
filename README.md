@@ -4,7 +4,7 @@
 
 ## 简历预览
 
-- **在线预览（GitHub Pages）**：<https://sebvzwx.github.io/Wayne----HTML/>
+- **在线预览（GitHub Pages）**：<https://sebvzwx.github.io/Wayne-resume/>
 - **PDF 版本**：[Wayne - Web3运营.pdf](./Wayne%20-%20Web3运营.pdf)
 - **本地预览**：下载项目后直接打开 `index.html`，或在项目目录启动任意静态文件服务器访问。
 
